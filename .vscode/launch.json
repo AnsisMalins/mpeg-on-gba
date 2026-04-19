@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/${fileWorkspaceFolderBasename}.elf",
+            "MIMode": "gdb",
+            "miDebuggerPath": "${env:DEVKITARM}/bin/arm-none-eabi-gdb",
+            "miDebuggerServerAddress": "host.docker.internal:2345",
+            "targetArchitecture": "arm"
+        }
+    ]
+}
