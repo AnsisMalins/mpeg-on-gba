@@ -2,10 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            // Before you launch, open a terminal window outside Visual Studio code and run
+            // mgba --gdb <path to the GBA file on host>
+            // mGBA will then start and wait for you to attach the debugger.
             "name": "Launch",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/${fileWorkspaceFolderBasename}.elf",
+            "cwd": "${workspaceFolder}",
             "MIMode": "gdb",
             "miDebuggerPath": "${env:DEVKITARM}/bin/arm-none-eabi-gdb",
             "miDebuggerServerAddress": "host.docker.internal:2345",

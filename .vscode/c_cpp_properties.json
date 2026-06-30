@@ -4,11 +4,12 @@
         {
             "name": "GameBoy Advance",
             "compilerPath": "${env:DEVKITPRO}/devkitARM/bin/arm-none-eabi-gcc",
-            "configurationProvider": "ms-vscode.makefile-tools",
+            //"configurationProvider": "ms-vscode.makefile-tools",
             "cStandard": "c99",
             "includePath": [
                 "${env:DEVKITPRO}/libtonc/include",
-                "${workspaceFolder}/build"
+                "${workspaceFolder}/build",
+                "${workspaceFolder}/source"
             ],
             "intelliSenseMode": "gcc-arm"
         }

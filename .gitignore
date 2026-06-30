@@ -4,3 +4,4 @@ build/
 *.gba
 *.lnk
 *.elf
+.DS_Store
