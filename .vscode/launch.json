@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            // Before you launch, open a terminal window outside Visual Studio code and run
+            // Before you launch, open a terminal window outside Visual Studio Code and run
             // mgba --gdb <path to the GBA file on host>
             // mGBA will then start and wait for you to attach the debugger.
             "name": "Launch",
