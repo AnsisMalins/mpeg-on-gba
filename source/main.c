@@ -84,10 +84,11 @@ int main(void)
 		plm_frame_t* frame = plm_decode_video(plm);
 
 		frame_to_indexed(frame, 
-			(uint8_t*)(MEM_VRAM + (M4_HEIGHT / 2 - frame->height / 2) * M4_WIDTH + (M4_WIDTH / 2 - frame->width / 2)),
+			(uint8_t*)vid_page + (M4_HEIGHT / 2 - frame->height / 2) * M4_WIDTH + (M4_WIDTH / 2 - frame->width / 2),
 			M4_WIDTH);
 
 		VBlankIntrWait();
+		vid_flip();
 	}
 
 	plm_destroy(plm);
