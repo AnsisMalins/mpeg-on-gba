@@ -1,3 +1,5 @@
+Put [pl_mpeg](https://github.com/phoboslab/pl_mpeg) and [a pony GIF](https://derpibooru.org/images/1950636) together into a GBA cartridge. GIF converted to MPEG1 using `ffmpeg -v:c mpeg1video`. Runs on [mGBA](https://mgba.io) at around 1 FPS.
+
 ## Quickstart
 
 > _"I want to make GBA homebrew, where do I begin?"_
