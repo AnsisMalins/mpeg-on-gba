@@ -1201,7 +1201,7 @@ plm_frame_t *plm_decode_video(plm_t *self) {
 	if (frame) {
 		self->time = frame->time;
 	}
-	else if (plm_demux_has_ended(self->demux)) {
+	if (plm_demux_has_ended(self->demux)) {
 		plm_handle_end(self);
 	}
 	return frame;
@@ -1220,7 +1220,7 @@ plm_samples_t *plm_decode_audio(plm_t *self) {
 	if (samples) {
 		self->time = samples->time;
 	}
-	else if (plm_demux_has_ended(self->demux)) {
+	if (plm_demux_has_ended(self->demux)) {
 		plm_handle_end(self);
 	}
 	return samples;
