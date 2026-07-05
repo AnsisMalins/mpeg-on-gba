@@ -185,3 +185,7 @@ soundbank.bin soundbank.h : $(AUDIOFILES)
 #---------------------------------------------------------------------------------------
 endif
 #---------------------------------------------------------------------------------------
+
+# Maximum speed: put the MPEG decoding code in IWRAM, but turn off long calls. The
+# caller also has to be in IWRAM, so add an attribute to a wrapper function in main.c
+mpeg.iwram.o: CFLAGS := $(filter-out -mlong-calls, $(CFLAGS))
