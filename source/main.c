@@ -1,19 +1,15 @@
 #include <tonc.h>
 #include "mpeg.h"
-#include "lunablep_bin.h"
+#include "palette_bin.h"
+#include "video_bin.h"
+#include "ycbcr_to_indexed_bin.h"
 
-void init_palette(COLOR* mem)
-{
-	// https://en.wikipedia.org/wiki/List_of_software_palettes#6_level_RGB
-	for (int r = 0; r < 6; r++)
-		for (int g = 0; g < 6; g++)
-			for (int b = 0; b < 6; b++)
-				mem[r * 36 + g * 6 + b] = RGB15(r * 31 / 5, g * 31 / 5, b * 31 / 5);
-}
+// Convert a video like this:
+// ffmpeg -i ~/Downloads/YP-1A-01x03.mkv -an -vf "framestep=2,setpts=0.5*PTS,fps=ntsc_film,scale=192:108:force_divisible_by=4:reset_sar=1" -vcodec mpeg1video -f mpeg data/video.bin
 
 IWRAM_CODE void main_iwram(void)
 {
-	plm_t* plm = plm_create_with_memory((uint8_t*)lunablep_bin, lunablep_bin_size, FALSE);
+	plm_t* plm = plm_create_with_memory((uint8_t*)video_bin, video_bin_size, FALSE);
 	plm_set_audio_enabled(plm, FALSE);
 	plm_set_loop(plm, TRUE);
 
@@ -23,7 +19,7 @@ IWRAM_CODE void main_iwram(void)
 	while (!plm_has_ended(plm))
 	{
 		plm_frame_t* frame = plm_decode_video(plm);
-		frame_to_indexed(frame, (uint8_t*)vid_page + offset, M4_WIDTH);
+		frame_to_indexed(frame, (uint8_t*)vid_page + offset, M4_WIDTH, ycbcr_to_indexed_bin);
 		VBlankIntrWait();
 		vid_flip();
 	}
@@ -40,8 +36,9 @@ int main(void)
 	// background palette located at 0x05000000.
 	REG_DISPCNT = DCNT_MODE4 | DCNT_BG2;
 
-	init_palette(pal_bg_mem);
+	memcpy32(pal_bg_mem, palette_bin, 256 * sizeof(COLOR) / sizeof(int));
+
 	main_iwram();
-	
+
 	return 0;
 }

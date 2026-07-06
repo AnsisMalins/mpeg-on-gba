@@ -4,12 +4,7 @@
 #define PLM_NO_STDIO
 #include "pl_mpeg.h"
 
-static inline uint8_t rgb_to_indexed(int r, int g, int b)
-{
-	return r * 5 / 255 * 36 + g * 5 / 255 * 6 + b * 5 / 255;
-}
-
-void frame_to_indexed(plm_frame_t* frame, uint8_t* dest, int stride)
+void frame_to_indexed(plm_frame_t* frame, uint8_t* dest, int stride, const uint8_t* ycbcr_to_indexed)
 {
     int cols = frame->width >> 1;
     int rows = frame->height >> 1;
@@ -25,25 +20,21 @@ void frame_to_indexed(plm_frame_t* frame, uint8_t* dest, int stride)
         for (int col = 0; col < cols; col++)
         {
             int y;
-            int cr = frame->cr.data[c_index] - 128;
-            int cb = frame->cb.data[c_index] - 128;
-            int r = (cr * 104597) >> 16;
-            int g = (cb * 25674 + cr * 53278) >> 16;
-            int b = (cb * 132201) >> 16;
+            int cbcr = (frame->cb.data[c_index] & 0xf0) | (frame->cr.data[c_index] >> 4);
 
-			y = ((frame->y.data[y_index + 0] - 16) * 76309) >> 16;
-			uint8_t pixel0 = rgb_to_indexed(plm_clamp(y + r), plm_clamp(y - g), plm_clamp(y + b));
+			y = frame->y.data[y_index] & 0xf0 << 4;
+			uint8_t pixel0 = ycbcr_to_indexed[y | cbcr];
 
-			y = ((frame->y.data[y_index + 1] - 16) * 76309) >> 16;
-			uint8_t pixel1 = rgb_to_indexed(plm_clamp(y + r), plm_clamp(y - g), plm_clamp(y + b));
+			y = frame->y.data[y_index + 1] & 0xf0 << 4;
+			uint8_t pixel1 = ycbcr_to_indexed[y | cbcr];
 
 			*(uint16_t*)(dest + d_index) = (pixel1 << 8) | pixel0;
 
-			y = ((frame->y.data[y_index + yw] - 16) * 76309) >> 16;
-			uint8_t pixel2 = rgb_to_indexed(plm_clamp(y + r), plm_clamp(y - g), plm_clamp(y + b));
+			y = frame->y.data[y_index + yw] & 0xf0 << 4;
+			uint8_t pixel2 = ycbcr_to_indexed[y | cbcr];
 
-			y = ((frame->y.data[y_index + yw + 1] - 16) * 76309) >> 16;
-			uint8_t pixel3 = rgb_to_indexed(plm_clamp(y + r), plm_clamp(y - g), plm_clamp(y + b));
+			y = frame->y.data[y_index + yw + 1] & 0xf0 << 4;
+			uint8_t pixel3 = ycbcr_to_indexed[y | cbcr];
 
 			*(uint16_t*)(dest + d_index + stride) = (pixel3 << 8) | pixel2;
 
